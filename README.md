@@ -119,3 +119,48 @@ LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES ;
 ```
 
+### Data adjustment
+On Features table we have 5 different types of MarkDowns and their final value in each week. Unfortunately, there is no information about these markdowns so for a particular project there is no sense to store them independently. As a result, a new column(Total_MarkDown) was added.
+
+```sql
+ALTER TABLE features 
+ADD Total_MarkDown INT AS ( MarkDown1 + MarkDown2 + MarkDown3 + MarkDown4 + MarkDown5) STORED;
+```
+
+### Data pre-testing
+Aims to analyse the distribution of values in dataset and identify trends.
+```sql
+Select Store,avg(CPI) as AVG_CPI from features 
+GROUP BY Store
+ORDER BY avg(CPI) desc ; 
+```
+```sql
+Select Store,avg(Unemployment) as AVG_Unemployment_Rate,
+CASE 
+WHEN avg(Unemployment) > 6.93217 THEN "Above Average"
+WHEN avg(Unemployment) < 6.93217 THEN "Below Average"
+END as Unemployment_lvl
+ from features 
+GROUP BY Store
+ORDER BY avg(Unemployment) desc ; 
+```
+
+```sql
+Select Store, avg(Fuel_Price) as AVG_FuelPrice from features 
+GROUP BY Store
+ORDER BY avg(Fuel_Price) desc ; 
+```
+
+
+```sql
+Select YEAR(Date_N),Month(Date_N), sum(Total_MarkDown)
+FROM features 
+Group by YEAR(Date_N),Month(Date_N)
+Order by Total_MarkDown desc;
+```
+
+As a result, the following statements can be highlighted:
+1.  Shops 2 and 4 provided the biggest amount of discounts during the period.
+2. The price of Fuel in all regions is approximately the same
+3. The Unemployment rate in the 2 regions(2nd Shop), while the Consumer Price Index is above average.
+4. The biggest MarkDowns among shops were available in February during the SuperBowl championship.
