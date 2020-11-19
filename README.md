@@ -136,6 +136,7 @@ Select Store,avg(CPI) as AVG_CPI from features
 GROUP BY Store
 ORDER BY avg(CPI) desc ; 
 ```
+
 Aim: To identify the average level of Unemployment in each region
 ```sql
 Select Store,avg(Unemployment) as AVG_Unemployment_Rate,
@@ -147,13 +148,15 @@ END as Unemployment_lvl
 GROUP BY Store
 ORDER BY avg(Unemployment) desc ; 
 ```
+
 Aim: To check if Fuel Price is different in different Regions --
 ```sql
 Select Store, avg(Fuel_Price) as AVG_FuelPrice from features 
 GROUP BY Store
 ORDER BY avg(Fuel_Price) desc ; 
 ```
-To see sales tendency from 2010 until 2012 in each of the shops
+
+Aim:To see sales tendency from 2010 until 2012 in each of the shops
 ```sql
 sum( case when year(s.Date_N) = 2010 then Weekly_Sales end) as "2010",
 sum( case when year(s.Date_N) = 2011 then Weekly_Sales end) as "2011",
@@ -174,6 +177,7 @@ As a result of pretesting,the following statements can be highlighted:
 For the following analysis variable, like: ID, Weekly_Sales, Total_MarkDown, Store, Data_N, CPI, Is_Holiday and Type_N were joined together for the following analysis.
 The factor is Weekly Sales, while Total_MarkDown and CPI related to dimension 1, Data_N and Is_Holiday relate to dimension 2, Type_N is dimension 3.
 The following table will be used for the further analysis of data.
+
 ```sql
 select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N,f.CPI,f.IsHoliday,st.Type_N,
 CASE
@@ -186,7 +190,8 @@ USING(ID)
 INNER JOIN stores as st
 Where s.Store = st.Store
 ```
- Aim: To find exact dates and shops where were the biggerst Total MarkDown values
+
+Aim: To find exact dates and shops where were the biggerst Total MarkDown values
 ```sql
 Select k.Store,k.Date_N,k.Total_MarkDown from
 (select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N,f.CPI,f.IsHoliday,st.Type_N,
@@ -225,9 +230,7 @@ Group by YEAR(Date_N);
 As we can see the sales in total the sales increased at the end of 2011 when MarkDowns policies were implemented.
 
 
-
 Aim: To see sales per each year considering the equal amount of months in each year. In particular dataset the historical data about discount policy available until October of 2012. 
-
 ```sql
 Select YEAR(Date_N) as Year, sum(Total_MarkDown) as Total_MarkDown , sum(Weekly_Sales) as Weekly_Sales ,avg(k.CPI) as AVG_CPI, avg(k.Unemployment) as AVG_Unemployment
 FROM 
@@ -244,7 +247,6 @@ Where s.Store = st.Store) as k
 where Month(k.Date_N) in (1,2,3,4,5,6,7,8,9,10)
 Group by YEAR(Date_N);
 ```
-
 
 
 Aim: to check the total amount of Weekly_Sales and MarkDown(where applicable) in each year and month
@@ -285,3 +287,73 @@ WHERE YEAR(f.Date_N) in ("2012")
 AND Month(f.Date_N) in (2)) as p
 WHERE p.Total_MarkDown <> 0;
 ```
+
+
+Aim: Compare Total Sales in Februaty(Month of SuperBowl championship) month before and after introduction the discounts
+```sql
+Aim: To see the tendency considering Shop Size 
+Select k.Store, sum(Total_MarkDown), sum(Weekly_Sales),k.Shop_Size
+FROM 
+(select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N,f.CPI,f.IsHoliday,st.Type_N,
+CASE
+WHEN st.Type_N = "A" THEN "Big"
+WHEN st.Type_N = "B" THEN "Small"
+END AS Shop_Size 
+from features as f
+INNER join sales as s
+USING(ID)
+INNER JOIN stores as st
+Where s.Store = st.Store) as k
+Group by k.Store,k.Shop_Size;
+```
+As we can see, shop number 2 and 4, which provided the biggest amount of sales, also the biggest shops in therm of area. Potentially, the size of the shop can have a strong influence on sales since they can provide a variety of different product, thereby fulfilling needs and wants of different customers segments. The relationship between a dependent variable and independent variables will be calculated with the help correlation in the following section.
+
+### Stole proceders
+
+```sql
+DROP PROCEDURE IF EXISTS GetAllProducts;
+
+DELIMITER //
+
+CREATE PROCEDURE GetAllProducts()
+BEGIN
+select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N,f.CPI,f.IsHoliday,st.Type_N,
+CASE
+WHEN st.Type_N = "A" THEN "Big"
+WHEN st.Type_N = "B" THEN "Small"
+END AS Shop_Size 
+from features as f
+INNER join sales as s
+USING(ID)
+INNER JOIN stores as st
+Where s.Store = st.Store; 
+END //
+DELIMITER ;
+CALL GetAllProducts()
+```
+
+Aim: Retriew weekly sales in particular shop in specified date.
+Input: Store number(1-5),date("YYYY-MM-DD")
+```sql
+DELIMITER $$
+CREATE PROCEDURE GetSalesByStoreAndDate (
+	IN  Store_Number INTEGER, Date_A Date, 
+	OUT total INT
+)
+BEGIN
+	select s.Weekly_Sales
+    INTO total
+    from sales as s
+    Where s.Store = Store_Number
+    and Date_N = Date_A; 
+END$$
+DELIMITER ;
+
+CALL GetSalesByStoreAndDate(1,"2010-02-19", @total_sales);
+SELECT @total_sales;
+
+```
+
+
+
+
