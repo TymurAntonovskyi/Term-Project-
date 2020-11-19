@@ -35,4 +35,4 @@ Historical sales data, which covers to 2010-02-05 to 2012-11-01. Within this tab
  The aim of this work is to analyze the reltionship betwwen the TotalValue of MarkDowns in 5 different shops and The total amont of sales. Along with it, aim is to check how other variables may influance the Weekly_Sales in each shop.
 
 ### Database structure 
-![Structure](https://lh3.googleusercontent.com/_YdrqHjMjVLmaiPeSPWwKUrEdboKh_HyKCvCrvwZbbXuo-MRHJivCUbWw4Xy1UNXY1XOcqsnmmdR6_x_lmfg=w1920-h912-rw)
+![Structure](https://lh4.googleusercontent.com/Ix-as6d99mUfQPWO-OtD_BL-uowIMe92xpWB2v7LjpnInz_Z7BiYXuSvHxjXSc6l2SkcYHI1gqJDAGRkOFVM=w1366-h568)
