@@ -39,7 +39,7 @@ Historical sales data, which covers to 2010-02-05 to 2012-11-01. Within this tab
 
 ### Data loading 
 Operational data layer 
-
+#### Features table
 ```sql
 USE project; 
 CREATE TABLE features 
@@ -57,3 +57,5 @@ CPI DECIMAL(5,2) NOT NULL ,
 Unemployment DECIMAL(2,1) NOT NULL ,
 IsHoliday INTEGER);  
 ```
+#### Sales table
+![Sales csv](https://github.com/TymurAntonovskyi/Term-Project-/blob/main/Featuresdata.csv)
