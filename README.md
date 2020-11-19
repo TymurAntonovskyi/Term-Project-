@@ -57,5 +57,6 @@ CPI DECIMAL(5,2) NOT NULL ,
 Unemployment DECIMAL(2,1) NOT NULL ,
 IsHoliday INTEGER);  
 ```
-#### Sales table
-[Sales csv](https://github.com/TymurAntonovskyi/Term-Project-/blob/main/Featuresdata.csv)
+#### Features table
+Use the following link for accessing data for features table
+[Features.csv link](https://github.com/TymurAntonovskyi/Term-Project-/blob/main/Featuresdata.csv)
