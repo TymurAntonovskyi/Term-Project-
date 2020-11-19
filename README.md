@@ -308,7 +308,7 @@ Group by k.Store,k.Shop_Size;
 ```
 As we can see, shop number 2 and 4, which provided the biggest amount of sales, also the biggest shops in therm of area. Potentially, the size of the shop can have a strong influence on sales since they can provide a variety of different product, thereby fulfilling needs and wants of different customers segments. The relationship between a dependent variable and independent variables will be calculated with the help correlation in the following section.
 
-### Stole proceders
+### Stored proceders
 
 ```sql
 DROP PROCEDURE IF EXISTS GetAllProducts;
