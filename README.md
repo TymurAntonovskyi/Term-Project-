@@ -37,8 +37,15 @@ Historical sales data, which covers to 2010-02-05 to 2012-11-01. Within this tab
 ### Database structure 
 ![Structure](https://lh4.googleusercontent.com/Ix-as6d99mUfQPWO-OtD_BL-uowIMe92xpWB2v7LjpnInz_Z7BiYXuSvHxjXSc6l2SkcYHI1gqJDAGRkOFVM=w1366-h568)
 
-### Data loading 
+### Create Schema 
+```sql
+CREATE SCHEMA project;
+USE project;  
+```
+
+### Table Creation 
 Operational data layer 
+
 #### Features table
 ```sql
 USE project; 
@@ -57,6 +64,7 @@ CPI DECIMAL(5,2) NOT NULL ,
 Unemployment DECIMAL(2,1) NOT NULL ,
 IsHoliday INTEGER);  
 ```
-#### Features table
 Use the following link for accessing data for features table
 [Features.csv link](https://github.com/TymurAntonovskyi/Term-Project-/blob/main/Featuresdata.csv)
+
+
