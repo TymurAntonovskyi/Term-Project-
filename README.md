@@ -58,4 +58,4 @@ Unemployment DECIMAL(2,1) NOT NULL ,
 IsHoliday INTEGER);  
 ```
 #### Sales table
-![Sales csv](https://github.com/TymurAntonovskyi/Term-Project-/blob/main/Featuresdata.csv)
+[Sales csv](https://github.com/TymurAntonovskyi/Term-Project-/blob/main/Featuresdata.csv)
