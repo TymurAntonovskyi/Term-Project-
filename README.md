@@ -351,9 +351,58 @@ DELIMITER ;
 
 CALL GetSalesByStoreAndDate(1,"2010-02-19", @total_sales);
 SELECT @total_sales;
-
 ```
 
 
+### Correlation
+```sql
+CREATE TABLE Correlation_S_MD SELECT
+f.Total_MarkDown,s.Weekly_Sales 
+from features as f
+INNER JOIN sales as s
+USING(ID)
+where Total_MarkDown != 0;
+
+Alter table correlation_s_md
+MODIFY COLUMN Total_MarkDown DECIMAL;
+
+Alter table correlation_s_md
+MODIFY COLUMN Weekly_Sales DECIMAL;
+
+describe correlation_s_md;
+select * from correlation_s_md;
+
+
+select @ax :=  avg(Total_MarkDown)  ,
+		@ay :=  avg(Weekly_Sales) ,
+       @cov :=  sum((c.Total_MarkDown - @ax) * (c.Weekly_Sales - @ay))/255  , 
+        @stdx :=  sqrt( sum( (c.Total_MarkDown - @ax) * (c.Total_MarkDown - @ax) )/255 ) ,
+        @stdy := sqrt(sum((c.Weekly_Sales - @ay) * (c.Weekly_Sales - @ay) )/ 255),
+        @cor := @cov/((@stdx*@stdy))
+from correlation_s_md c; 
+```
+Result: Correlation between Total MarkDown variable and Weekly_Sales is 33%. 
+
+```sql
+CREATE TABLE Correlation_Sales_CPI SELECT
+s.Weekly_Sales,f.CPI 
+from features as f
+INNER JOIN sales as s
+USING(ID);
+select * from Correlation_Sales_CPI;
+Alter table Correlation_Sales_CPI
+MODIFY COLUMN Weekly_Sales DECIMAL;
+describe Correlation_Sales_CPI;
+select * from Correlation_Sales_CPI;
+ 
+select @ax :=  avg(Weekly_Sales)  ,
+		@ay :=  avg(CPI) ,
+       @cov :=  sum((b.Weekly_Sales - @ax) * (b.CPI - @ay))/715  , 
+        @stdx :=  sqrt( sum( (b.Weekly_Sales - @ax) * (b.Weekly_Sales - @ax) )/715 ) ,
+        @stdy := sqrt(sum((b.CPI - @ay) * (b.CPI - @ay) )/ 715),
+        @cor := @cov/((@stdx*@stdy))
+from Correlation_Sales_CPI as b; 
+```
+Result: The correlation between Sales and Consumer Price Index = -51%. It means that sales decrease when the Consumer Price Index increase. We can observe the same in the real market since when the Consumer Price Index increase people can buy a lower bundle of good for a specified amount of money. 
 
 
