@@ -21,7 +21,7 @@ Contains additional data related to the store, department, and regional activity
  - CPI - the consumer price index
  - Unemployment - the unemployment rate
  - IsHoliday - whether the week is a special holiday week
-### Sales
+#### Sales
 Historical sales data, which covers to 2010-02-05 to 2012-11-01. Within this tab you will find the following fields:
 
  - Store - the store number
@@ -65,6 +65,27 @@ Unemployment DECIMAL(2,1) NOT NULL ,
 IsHoliday INTEGER);  
 ```
 Use the following link for accessing data for features table
-[Features.csv link](https://github.com/TymurAntonovskyi/Term-Project-/blob/main/Featuresdata.csv)
+[Features.csv](https://github.com/TymurAntonovskyi/Term-Project-/blob/main/Featuresdata.csv)
+
+##### Load data to Features table
+```sql
+LOAD DATA INFILE 'c:/Program Files/MySQL/Uploads/Featuresdata.csv'  
+INTO TABLE features 
+FIELDS TERMINATED BY ',' 
+LINES TERMINATED BY '\r\n' 
+IGNORE 1 LINES ;  
+```
 
 
+#### Sales Table
+```sql
+USE project; 
+CREATE TABLE Sales
+(ID INTEGER PRIMARY KEY NOT NULL,
+Store INTEGER NOT NULL,
+Date_N DATE NOT NULL,
+Weekly_Sales INTEGER NOT NULL,
+IsHoliday INTEGER); 
+```
+Use the following link for accessing data for sales table
+[Sales.csv](https://github.com/TymurAntonovskyi/Term-Project-/blob/main/Salesdata.csv)
