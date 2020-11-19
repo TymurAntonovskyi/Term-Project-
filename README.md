@@ -36,3 +36,24 @@ Historical sales data, which covers to 2010-02-05 to 2012-11-01. Within this tab
 
 ### Database structure 
 ![Structure](https://lh4.googleusercontent.com/Ix-as6d99mUfQPWO-OtD_BL-uowIMe92xpWB2v7LjpnInz_Z7BiYXuSvHxjXSc6l2SkcYHI1gqJDAGRkOFVM=w1366-h568)
+
+### Data loading 
+Operational data layer 
+
+```sql
+USE project; 
+CREATE TABLE features 
+( ID INTEGER PRIMARY KEY NOT NULL,
+Store INTEGER NOT NULL,
+Date_N DATE NOT NULL,
+Temperature DECIMAL(4,2) NOT NULL,
+Fuel_Price DECIMAL(3,2) NOT NULL,
+MarkDown1 INTEGER NOT NULL,
+MarkDown2 INTEGER NOT NULL,
+MarkDown3 INTEGER NOT NULL,
+MarkDown4 INTEGER NOT NULL,
+MarkDown5 INTEGER NOT NULL,
+CPI DECIMAL(5,2) NOT NULL ,
+Unemployment DECIMAL(2,1) NOT NULL ,
+IsHoliday INTEGER);  
+```
