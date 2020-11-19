@@ -89,3 +89,33 @@ IsHoliday INTEGER);
 ```
 Use the following link for accessing data for sales table
 [Sales.csv](https://github.com/TymurAntonovskyi/Term-Project-/blob/main/Salesdata.csv)
+
+##### Load data to Sales table
+```sql
+LOAD DATA INFILE 'c:/Program Files/MySQL/Uploads/Salesdata.csv'  
+INTO TABLE sales 
+FIELDS TERMINATED BY ',' 
+LINES TERMINATED BY '\r\n' 
+IGNORE 1 LINES ;
+```
+
+#### Stores table
+```sql
+USE project; 
+CREATE TABLE Stores
+(Store INTEGER PRIMARY KEY NOT NULL,
+Type_N VARCHAR(16) NOT NULL,
+Size INTEGER NOT NULL); 
+```
+Use the following link for accessing data for stores table
+[Stores.csv](https://github.com/TymurAntonovskyi/Term-Project-/blob/main/Storesdata.csv)
+
+##### Load data to Stores table
+```sql
+LOAD DATA INFILE 'c:/Program Files/MySQL/Uploads/Storesdata.csv'  
+INTO TABLE Stores 
+FIELDS TERMINATED BY ',' 
+LINES TERMINATED BY '\r\n' 
+IGNORE 1 LINES ;
+```
+
