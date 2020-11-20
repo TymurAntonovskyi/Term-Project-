@@ -366,12 +366,14 @@ SELECT @total_sales;
 ```
 ### Views
 
-#### View 1: Shows the Sales for 2 shop in 2012.
+#### View 1: Shows the Sales for store number 4 in 2010 and 2011.
 ```sql
-DROP VIEW IF EXISTS MonthlySales_Store2;
-CREATE VIEW `MonthlySales_Store2_2012` AS
-SELECT * FROM sales WHERE store = 2 and Year(Date_N)= 2012;
-select * from `MonthlySales_Store2_2012`;
+DROP VIEW IF EXISTS MonthlySales_Store2_2010_2011;
+CREATE VIEW `MonthlySales_Store2_2010_2011` AS
+SELECT sum(Weekly_Sales) as Total_Sales FROM sales WHERE store = 4 and Year(Date_N) in (2010,2011)
+GROUP BY Year(Date_N)
+ORDER BY Year(Date_N) asc  ;
+select * from `MonthlySales_Store2_2010_2011`;
 ```
 
 
