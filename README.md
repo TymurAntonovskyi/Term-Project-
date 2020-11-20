@@ -3,36 +3,34 @@
 
 ### Content
 
-You are provided with historical sales data for 45 stores located in different regions - each store contains a number of departments. The company also runs several promotional markdown events throughout the year. These markdowns precede prominent holidays, the four largest of which are the Super Bowl, Labor Day, Thanksgiving, and Christmas. The weeks including these holidays are weighted five times higher in the evaluation than non-holiday weeks.
-Within the Excel Sheet, there are 3 Tabs – Stores, Features and Sales
+For the current analysis, the historical sales data for 5 stores located in different regions from 2010 until 2012. These shops ran several promotional markdown events throughout the end of 2011 until February of the 2012 year. These markdowns precede prominent holidays, the four largest of which are the Super Bowl, Labor Day, Thanksgiving, and Christmas. Within the CSV Tables, there are 3 Tables – Stores, Features and Sales, described below. 
 
 #### Stores
 
-Anonymized information about the 45 stores, indicating the type and size of store
+Table indicating the type and size of store
 
 #### Features
-Contains additional data related to the store, department, and regional activity for the given dates.
+Contains additional data related to the store, and regional activity for the given dates.
 
  - Store - the store number
- - Date - the week
+ - Date_N - the week
  - Temperature - average temperature in the region
  - Fuel_Price - cost of fuel in the region
- - MarkDown1-5 - anonymized data related to promotional markdowns. MarkDown data is only available after Nov 2011, and is not available for all stores all the time. Any missing value is marked with an NA
- - CPI - the consumer price index
- - Unemployment - the unemployment rate
- - IsHoliday - whether the week is a special holiday week
+ - MarkDown1-5 - anonymized data related to promotional markdowns. MarkDown data is only available after Nov 2011 and is not available for all stores all the time. Since this information is anonymized, all markdowns will be sum up in Total_MarkDown variable. Since the author can not differentiate markdowns based their characteristics or features there is no sense to store them separately in the current analysis.
+ - CPI - the consumer price index in a given date
+ - Unemployment - the unemployment rate in a given date
+ - IsHoliday - whether the week is a special holiday week. 1 - Yes, 0 - No
 #### Sales
 Historical sales data, which covers to 2010-02-05 to 2012-11-01. Within this tab you will find the following fields:
-
  - Store - the store number
- - Dept - the department number
- - Date - the week
- - Weekly_Sales -  sales for the given department in the given store
+ - Date_N - the week
+ - Weekly_Sales -  sales for the given store in the given store
  - IsHoliday - whether the week is a special holiday week
  
+ Notes:  Notes: In the original dataset, there are 45 stores from different regions with 99 departments in each shop. In particular work, author limited the research range to 5 stores with 1 department. Also, in this dataset, we have 3 years range, but data is not equally distributed. Speaking about MarkDown policies, they were implemented in November 2011 and continued until December 2012. So some of the following operations, the author will specify the specific time range in months in order to have the same date range. 
  
  ### Aim of the analysis 
- The aim of this work is to analyze the reltionship betwwen the TotalValue of MarkDowns in 5 different shops and The total amont of sales. Along with it, aim is to check how other variables may influance the Weekly_Sales in each shop.
+ The aim of this work is to test and analyze the relationship between the presence of MarkDowm policies in 5 different shops and the total volume of sales. Along with it, the author will identify how other variables may influence the sales in each shop. Besides, the author aims to analyze statistical correlation between dependent and independent variables. 
 
 ### Database structure 
 ![Structure](https://github.com/TymurAntonovskyi/Term-Project-/blob/main/Scheme.PNG)
@@ -456,5 +454,5 @@ from Correlation_Sales_CPI as b;
 Result: The correlation between Sales and Consumer Price Index = -51%. It means that sales decrease when the Consumer Price Index increase. We can observe the same in the real market since when the Consumer Price Index increase people can buy a lower bundle of good for a specified amount of money. 
 
 
-
-
+## Conclusion
+Based on particular research, the straight forward relationship between sales and discounts was not identified. Since this dataset is anonymous it is difficult to draw conclusion and reasoning for a particular finding. Based on the number, it can be seen that sales usually increased in "Traditional Holidays" months. In the same time, the sales in remained months varied between each other. Based on personal thought and available information online, the author thinks that potentially shop number 2 and 4 (with the highest amount of sales and discounts) implemented the discount policy for the huge variety of products, meaning that a lot of products had discounted price compared to the original price. Also, it was found, that shop size had an influence on sales. Probably, the big shop had the chance to sell a higher volume of different products, thereby targeting different customers groups. 
