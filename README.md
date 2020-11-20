@@ -165,11 +165,29 @@ from sales as s
 group by store
 order by Weekly_Sales desc;
 ```
+```sql
+Select avg(Weekly_Sales) from sales;
+Select max(Weekly_Sales) from sales;
+Select min(Weekly_Sales) from sales;
+
+```
+```sql
+Select store,avg(Weekly_Sales), 
+CASE
+WHEN avg(Weekly_Sales) >= 21475 THEN "Bigger then AVG"
+ELSE "Lower then AVG"
+END as Comparison_With_AVG
+from sales
+Group by store
+ORDER BY avg(Weekly_Sales) desc ;
+```
+
 
 As a result of pretesting,the following statements can be highlighted:
 1. The price of Fuel in all regions is approximately the same.
 2. The Unemployment rate is the biggest in the 2 regions(2nd Shop) and the Consumer Price Index is above average.
-3. The introduction of discount policy in shops had ambiguous effect on sales. 
+3. The introduction of discount policy in shops had ambiguous effect on sales.
+4.Sales in shops number 4,2 and 1 were bigger compare average sales in all regions.
 
 
 
@@ -179,7 +197,7 @@ The factor is Weekly Sales, while Total_MarkDown and CPI related to dimension 1,
 The following table will be used for the further analysis of data.
 
 ```sql
-select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N,f.CPI,f.IsHoliday,st.Type_N,
+select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N as Date,f.CPI,f.IsHoliday,st.Type_N as Store_Type,
 CASE
 WHEN st.Type_N = "A" THEN "Big"
 WHEN st.Type_N = "B" THEN "Small"
@@ -190,10 +208,14 @@ USING(ID)
 INNER JOIN stores as st
 Where s.Store = st.Store
 ```
+Results: The highers value 4 times bigger than the smaller values, also we can notice that shop 2 and 4 actively provide discounts  -- 
+Also, we can see that the level of sales can be affected by the size of the shop. Shop number 3 and 5 had a much lower size compare to other shops.
+
+
 
 Aim: To find exact dates and shops where were the biggerst Total MarkDown values
 ```sql
-Select k.Store,k.Date_N,k.Total_MarkDown from
+Select k.Store,k.Date_N,k.Total_MarkDown,k.Shop_Size from
 (select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N,f.CPI,f.IsHoliday,st.Type_N,
 CASE
 WHEN st.Type_N = "A" THEN "Big"
@@ -208,7 +230,26 @@ ORDER BY Total_MarkDown desc
 LIMIT 10;
 ```
 As we can observe: Shops 2 and 4 provided the biggest amount of discounts during the period.
-The biggest MarkDowns among shops were available in February during the SuperBowl championship and during Christmas holidays.
+The biggest MarkDowns among shops were available in February during the SuperBowl championship and during Christmas holidays. In the same time,total value of discounts also increased before and after other Holiday days but volume of discounts was lower.
+
+```sql
+Select k.Store,Year(k.Date_N) as Year,Month(k.Date_N) as Month,sum(k.Total_MarkDown) as Total_MarkDown,sum(k.Weekly_Sales) as Weekly_Sales,k.Shop_Size
+from (select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N,f.CPI,f.IsHoliday,st.Type_N,
+CASE
+WHEN st.Type_N = "A" THEN "Big"
+WHEN st.Type_N = "B" THEN "Small"
+END AS Shop_Size 
+from features as f
+INNER join sales as s
+USING(ID)
+INNER JOIN stores as st
+Where s.Store = st.Store) as k
+WHERE k.Date_N between "2012-01-06" and "2012-10-26"
+GROUP BY k.Store,Year(k.Date_N),Month(k.Date_N),k.Shop_Size
+ORDER BY k.Store,Year(k.Date_N),Month(k.Date_N) asc;
+```
+Result: As it can be seen,there is not straight forward relationship between Sales and MarkDown policies.
+
 
 
 Aim: To see the sales CPI before and after the introduction of Discount policies in each shop.
@@ -227,10 +268,10 @@ INNER JOIN stores as st
 Where s.Store = st.Store) as k
 Group by YEAR(Date_N);
 ```
-As we can see the sales in total the sales increased at the end of 2011 when MarkDowns policies were implemented.
+As we can see the total sales increased at the end of 2011 when MarkDowns policies were implemented.
 
 
-Aim: To see sales per each year considering the equal amount of months in each year. In particular dataset the historical data about discount policy available until October of 2012. 
+Aim: To see sales in each year, considering the equal amount of months. In particular dataset the historical data about discount policy distributed and available unequally. The data about sales during discount available until October of 2012. 
 ```sql
 Select YEAR(Date_N) as Year, sum(Total_MarkDown) as Total_MarkDown , sum(Weekly_Sales) as Weekly_Sales ,avg(k.CPI) as AVG_CPI, avg(k.Unemployment) as AVG_Unemployment
 FROM 
@@ -249,25 +290,9 @@ Group by YEAR(Date_N);
 ```
 
 
-Aim: to check the total amount of Weekly_Sales and MarkDown(where applicable) in each year and month
-```sql
-Select YEAR(Date_N),Month(Date_N), k.Store, sum(Total_MarkDown), sum(Weekly_Sales)
-FROM 
-(select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N,f.CPI,f.IsHoliday,st.Type_N,
-CASE
-WHEN st.Type_N = "A" THEN "Big"
-WHEN st.Type_N = "B" THEN "Small"
-END AS Shop_Size 
-from features as f
-INNER join sales as s
-USING(ID)
-INNER JOIN stores as st
-Where s.Store = st.Store) as k
-Group by YEAR(Date_N),Month(Date_N),k.Store;
-```
 
 
-Aim: Compare Total Sales in Februaty(Month of SuperBowl championship) month before and after introduction the discounts
+Aim: Compare Total Sales in February 2010(without discounts) and in February 2012 (after introduction of the discounts). In February there is SuperBowl championship and as it was mention previously there a huge volume of sales in the shops.
 ```sql
 select p.Weekly_Sales, p.Total_MarkDown from (
 select  s.ID, s.Weekly_Sales,f.Total_MarkDown
@@ -288,25 +313,7 @@ AND Month(f.Date_N) in (2)) as p
 WHERE p.Total_MarkDown <> 0;
 ```
 
-
-Aim: Compare Total Sales in Februaty(Month of SuperBowl championship) month before and after introduction the discounts
-```sql
-Aim: To see the tendency considering Shop Size 
-Select k.Store, sum(Total_MarkDown), sum(Weekly_Sales),k.Shop_Size
-FROM 
-(select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N,f.CPI,f.IsHoliday,st.Type_N,
-CASE
-WHEN st.Type_N = "A" THEN "Big"
-WHEN st.Type_N = "B" THEN "Small"
-END AS Shop_Size 
-from features as f
-INNER join sales as s
-USING(ID)
-INNER JOIN stores as st
-Where s.Store = st.Store) as k
-Group by k.Store,k.Shop_Size;
-```
-As we can see, shop number 2 and 4, which provided the biggest amount of sales, also the biggest shops in therm of area. Potentially, the size of the shop can have a strong influence on sales since they can provide a variety of different product, thereby fulfilling needs and wants of different customers segments. The relationship between a dependent variable and independent variables will be calculated with the help correlation in the following section.
+As we can see, shop number 2 and 4, which provided the biggest amount of sales, also the biggest shops in therm of area and shelves space. Potentially, the size of the shop can have a strong influence on sales since they can provide a variety of different product, thereby fulfilling needs and wants of different customers segments. The relationship between a dependent variable and independent variables will be calculated with the help correlation in the following section.
 
 ### Stored proceders
 
@@ -317,7 +324,7 @@ DELIMITER //
 
 CREATE PROCEDURE GetAllProducts()
 BEGIN
-select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N,f.CPI,f.IsHoliday,st.Type_N,
+select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N as Date,f.CPI,f.IsHoliday,st.Type_N as Store_Type,
 CASE
 WHEN st.Type_N = "A" THEN "Big"
 WHEN st.Type_N = "B" THEN "Small"
@@ -329,7 +336,7 @@ INNER JOIN stores as st
 Where s.Store = st.Store; 
 END //
 DELIMITER ;
-CALL GetAllProducts()
+ CALL GetAllProducts()
 ```
 
 Aim: Retriew weekly sales in particular shop in specified date.
@@ -352,9 +359,40 @@ DELIMITER ;
 CALL GetSalesByStoreAndDate(1,"2010-02-19", @total_sales);
 SELECT @total_sales;
 ```
+### Views
+
+View 1: Shows the Sales for 2 shop in 2012.
+```sql
+DROP VIEW IF EXISTS MonthlySales_Store2;
+CREATE VIEW `MonthlySales_Store2_2012` AS
+SELECT * FROM sales WHERE store = 2 and Year(Date_N)= 2012;
+select * from `MonthlySales_Store2_2012`;
+```
+View 2: Shows the final version of combined tables
+```sql
+DROP VIEW IF EXISTS weekly_sales_view;
+CREATE VIEW weekly_sales_view
+as select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,YEAR(f.Date_N),Month(f.Date_N),f.CPI,f.IsHoliday,st.Type_N,
+CASE
+WHEN st.Type_N = "A" THEN "Big"
+WHEN st.Type_N = "B" THEN "Small"
+END AS Shop_Size 
+from features as f
+INNER join sales as s
+USING(ID)
+INNER JOIN stores as st
+Where s.Store = st.Store;
+```
+Call view 2 with the following query:
+```sql
+SELECT * FROM weekly_sales_view;
+```
+
 
 
 ### Correlation
+
+Calculation of correlation between Total MarkDown variable and Weekly_Sales
 ```sql
 CREATE TABLE Correlation_S_MD SELECT
 f.Total_MarkDown,s.Weekly_Sales 
@@ -381,8 +419,11 @@ select @ax :=  avg(Total_MarkDown)  ,
         @cor := @cov/((@stdx*@stdy))
 from correlation_s_md c; 
 ```
-Result: Correlation between Total MarkDown variable and Weekly_Sales is 33%. 
+Result: Correlation between Total MarkDown variable and Weekly_Sales is 33%. It menas that there is not strong correlation betwwen 2 particular variables.  
 
+
+
+Calculation of correlation between Sales and Consumer Price Index 
 ```sql
 CREATE TABLE Correlation_Sales_CPI SELECT
 s.Weekly_Sales,f.CPI 
@@ -404,5 +445,7 @@ select @ax :=  avg(Weekly_Sales)  ,
 from Correlation_Sales_CPI as b; 
 ```
 Result: The correlation between Sales and Consumer Price Index = -51%. It means that sales decrease when the Consumer Price Index increase. We can observe the same in the real market since when the Consumer Price Index increase people can buy a lower bundle of good for a specified amount of money. 
+
+
 
 
