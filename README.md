@@ -196,6 +196,7 @@ For the following analysis variable, like: ID, Weekly_Sales, Total_MarkDown, Sto
 The factor is Weekly Sales, while Total_MarkDown and CPI related to dimension 1, Data_N and Is_Holiday relate to dimension 2, Type_N is dimension 3.
 The following table will be used for the further analysis of data.
 
+#### Query 1
 ```sql
 select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N as Date,f.CPI,f.IsHoliday,st.Type_N as Store_Type,
 CASE
@@ -212,7 +213,7 @@ Results: The highers value 4 times bigger than the smaller values, also we can n
 Also, we can see that the level of sales can be affected by the size of the shop. Shop number 3 and 5 had a much lower size compare to other shops.
 
 
-
+#### Query 2
 Aim: To find exact dates and shops where were the biggerst Total MarkDown values
 ```sql
 Select k.Store,k.Date_N,k.Total_MarkDown,k.Shop_Size from
@@ -232,6 +233,7 @@ LIMIT 10;
 As we can observe: Shops 2 and 4 provided the biggest amount of discounts during the period.
 The biggest MarkDowns among shops were available in February during the SuperBowl championship and during Christmas holidays. In the same time,total value of discounts also increased before and after other Holiday days but volume of discounts was lower.
 
+#### Query 3
 ```sql
 Select k.Store,Year(k.Date_N) as Year,Month(k.Date_N) as Month,sum(k.Total_MarkDown) as Total_MarkDown,sum(k.Weekly_Sales) as Weekly_Sales,k.Shop_Size
 from (select f.ID,s.Weekly_Sales,f.Total_MarkDown,f.Store,f.Date_N,f.CPI,f.IsHoliday,st.Type_N,
@@ -251,7 +253,7 @@ ORDER BY k.Store,Year(k.Date_N),Month(k.Date_N) asc;
 Result: As it can be seen,there is not straight forward relationship between Sales and MarkDown policies.
 
 
-
+#### Query 4
 Aim: To see the sales CPI before and after the introduction of Discount policies in each shop.
 ```sql
 Select YEAR(Date_N) as Year, sum(Total_MarkDown) as Total_MarkDown , sum(Weekly_Sales) as Yearly_Sales ,avg(k.CPI) as AVG_CPI
@@ -271,6 +273,7 @@ Group by YEAR(Date_N);
 As we can see the total sales increased at the end of 2011 when MarkDowns policies were implemented.
 
 
+#### Query 5
 Aim: To see sales in each year, considering the equal amount of months. In particular dataset the historical data about discount policy distributed and available unequally. The data about sales during discount available until October of 2012. 
 ```sql
 Select YEAR(Date_N) as Year, sum(Total_MarkDown) as Total_MarkDown , sum(Weekly_Sales) as Weekly_Sales ,avg(k.CPI) as AVG_CPI, avg(k.Unemployment) as AVG_Unemployment
@@ -290,8 +293,7 @@ Group by YEAR(Date_N);
 ```
 
 
-
-
+#### Query 6
 Aim: Compare Total Sales in February 2010(without discounts) and in February 2012 (after introduction of the discounts). In February there is SuperBowl championship and as it was mention previously there a huge volume of sales in the shops.
 ```sql
 select p.Weekly_Sales, p.Total_MarkDown from (
@@ -317,6 +319,8 @@ As we can see, shop number 2 and 4, which provided the biggest amount of sales, 
 
 ### Stored proceders
 
+#### Stored proceder 1
+Aim: To get final table from analytical layer
 ```sql
 DROP PROCEDURE IF EXISTS GetAllProducts;
 
@@ -339,6 +343,7 @@ DELIMITER ;
  CALL GetAllProducts()
 ```
 
+#### Stored proceder 2
 Aim: Retriew weekly sales in particular shop in specified date.
 Input: Store number(1-5),date("YYYY-MM-DD")
 ```sql
@@ -361,14 +366,16 @@ SELECT @total_sales;
 ```
 ### Views
 
-View 1: Shows the Sales for 2 shop in 2012.
+#### View 1: Shows the Sales for 2 shop in 2012.
 ```sql
 DROP VIEW IF EXISTS MonthlySales_Store2;
 CREATE VIEW `MonthlySales_Store2_2012` AS
 SELECT * FROM sales WHERE store = 2 and Year(Date_N)= 2012;
 select * from `MonthlySales_Store2_2012`;
 ```
-View 2: Shows the final version of combined tables
+
+
+#### View 2: Shows the final version of combined tables
 ```sql
 DROP VIEW IF EXISTS weekly_sales_view;
 CREATE VIEW weekly_sales_view
@@ -392,7 +399,7 @@ SELECT * FROM weekly_sales_view;
 
 ### Correlation
 
-Calculation of correlation between Total MarkDown variable and Weekly_Sales
+#### Calculation of correlation between Total MarkDown variable and Weekly_Sales
 ```sql
 CREATE TABLE Correlation_S_MD SELECT
 f.Total_MarkDown,s.Weekly_Sales 
@@ -423,7 +430,7 @@ Result: Correlation between Total MarkDown variable and Weekly_Sales is 33%. It 
 
 
 
-Calculation of correlation between Sales and Consumer Price Index 
+#### Calculation of correlation between Sales and Consumer Price Index 
 ```sql
 CREATE TABLE Correlation_Sales_CPI SELECT
 s.Weekly_Sales,f.CPI 
